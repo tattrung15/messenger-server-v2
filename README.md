@@ -1,5 +1,25 @@
 # Messenger Server v2
 
+## Setup MongoDB replica set on Windows
+
+- Stop MongoDB service
+
+- Open CMD as Administrator and access C:\Program Files\MongoDB\Server\<version>\bin>
+
+```bash
+mongod --dbpath "C:\Program Files\MongoDB\Server\<version>\data" --logpath "C:\Program Files\MongoDB\Server\<version>\log\mongod.log" --port 27017 --storageEngine=wiredTiger --journal --replSet myset
+```
+
+- Open other CMD and enable replica set
+
+```bash
+mongo --port 27017
+```
+
+```bash
+rs.initiate()
+```
+
 ## Installation
 
 ```bash
