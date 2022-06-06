@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  username    String   @unique
+  password    String
+  displayName String   @map("display_name")
+  isOnline    Boolean  @default(false) @map("is_online")
+  email       String
+  phoneNumber String   @map("phone_number")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  messages            Message[]            @relation(name: "message_users_fk")
+  conversationMembers ConversationMember[] @relation(name: "conversation_member_users_fk")
+
+  @@map("users")
+}
+
+model Conversation {
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  conversationType ConversationType @default(PRIVATE) @map("conversation_type")
+  conversationName String?          @map("conversation_name")
+  from             String?
+  to               String?
+  newMessageBody   String           @map("new_message_body")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @default(now()) @updatedAt @map("updated_at")
+
+  messages            Message[]            @relation(name: "message_conversations_fk")
+  conversationMembers ConversationMember[] @relation(name: "conversation_member_conversations_fk")
+
+  @@map("conversations")
+}
+
+model ConversationMember {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId String @map("conversation_id") @db.ObjectId
+  userId         String @map("user_id") @db.ObjectId
+
+  conversation Conversation @relation(name: "conversation_member_conversations_fk", fields: [conversationId], references: [id])
+  user         User         @relation(name: "conversation_member_users_fk", fields: [userId], references: [id])
+
+  @@map("conversation_members")
+}
+
+model Message {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  parentMessageId String?     @unique @db.ObjectId
+  conversationId  String      @map("conversation_id") @db.ObjectId
+  senderId        String      @map("sender_id") @db.ObjectId
+  type            MessageType
+  body            String
+  fileName        String?     @map("file_name")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @default(now()) @updatedAt @map("updated_at")
+
+  conversation   Conversation @relation(name: "message_conversations_fk", fields: [conversationId], references: [id])
+  sender         User         @relation(name: "message_users_fk", fields: [senderId], references: [id])
+  parentMessage  Message?     @relation(name: "parent_message_messages_fk", fields: [parentMessageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  repliedMessage Message?     @relation(name: "parent_message_messages_fk")
+
+  @@map("messages")
+}
+
+enum ConversationType {
+  PRIVATE
+  GROUP
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+}
