@@ -35,6 +35,12 @@ $ yarn install
 $ npx prisma generate
 ```
 
+- Push the initial schema to the database
+
+```shell
+$ npx prisma db push
+```
+
 ## Running the app
 
 ```bash
