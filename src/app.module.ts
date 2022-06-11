@@ -7,9 +7,10 @@ import { LoggerMiddleware } from "./common/logger/logger.middleware";
 import { LoggerModule } from "./common/logger/logger.module";
 import { PrismaModule } from "./common/prisma/prisma.module";
 import { PrismaService } from "./common/prisma/prisma.service";
+import { SocketModule } from "./gateways/socket/socket.module";
 
 @Module({
-  imports: [LoggerModule, PrismaModule],
+  imports: [LoggerModule, PrismaModule, SocketModule],
   controllers: [AppController],
   providers: [
     AppService,
