@@ -4,13 +4,13 @@
 
 - Stop MongoDB service
 
-- Open CMD as Administrator and access C:\Program Files\MongoDB\Server&#92;&lt;version&gt;\bin>
+- Open CMD as Administrator and access C:\Program Files\MongoDB\Server&#92;&lt;version&gt;\bin
 
 ```bash
 mongod --dbpath "C:\Program Files\MongoDB\Server\<version>\data" --logpath "C:\Program Files\MongoDB\Server\<version>\log\mongod.log" --port 27017 --storageEngine=wiredTiger --journal --replSet myset
 ```
 
-- Open other CMD and enable replica set
+- Open other CMD and enable replica set (just run for the first time)
 
 ```bash
 mongo --port 27017
